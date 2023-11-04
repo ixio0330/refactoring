@@ -32,8 +32,6 @@ const invoices = {
 };
 
 function statement(invoices, plays) {
-  let result = `청구 내역 (고객명: ${invoices.customer})\n`;
-
   function usd(aNumber) {
     return new Intl.NumberFormat(
       'en-us', 
@@ -96,6 +94,7 @@ function statement(invoices, plays) {
     return result;
   }
   
+  let result = `청구 내역 (고객명: ${invoices.customer})\n`;
   for (let perf of invoices.performances) {
     // 청구 내역 출력
     result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`;
