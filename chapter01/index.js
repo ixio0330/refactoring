@@ -35,15 +35,17 @@ function statement(invoices, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoices.customer})\n`;
-  const format = 
-    new Intl.NumberFormat(
+
+  function format(aNumber) {
+    return new Intl.NumberFormat(
       'en-us', 
       { 
         style: 'currency', 
         currency: 'usd', 
         minimumFractionDigits: 2 
       }
-    ).format;
+    ).format(aNumber);
+  }
   
   function playFor(aPerformance) {
     return plays[aPerformance.playID];
