@@ -51,7 +51,7 @@ function statement(invoices, plays) {
 
   function amountFor(aPerformance) {
     let result = 0;
-    switch (playFor(aPerformance)) {
+    switch (playFor(aPerformance).type) {
       case 'tragedy':
         result = 40_000;
         if (aPerformance.audience > 30) {
@@ -72,7 +72,7 @@ function statement(invoices, plays) {
   }
   
   for (let perf of invoices.performances) {
-    let thisAmount = amountFor(perf, playFor(perf));
+    let thisAmount = amountFor(perf);
 
     // 포인트 적립
     volumeCredits += Math.max(perf.audience - 30, 0);
