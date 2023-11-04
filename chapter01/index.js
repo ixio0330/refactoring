@@ -33,7 +33,6 @@ const invoices = {
 
 function statement(invoices, plays) {
   let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoices.customer})\n`;
 
   function usd(aNumber) {
@@ -82,6 +81,7 @@ function statement(invoices, plays) {
     return result;
   }
   
+  let volumeCredits = 0;
   for (let perf of invoices.performances) {
     volumeCredits += volumeCreditsFor(perf);
     
