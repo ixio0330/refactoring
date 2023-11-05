@@ -31,7 +31,7 @@ const invoices = {
   ]
 };
 
-function renderPlainText(data, invoices, plays) {
+function renderPlainText(data, plays) {
   function usd(aNumber) {
     return new Intl.NumberFormat(
       'en-us', 
@@ -109,7 +109,7 @@ function statement(invoice, plays) {
     customer: invoice.customer,
     performances: invoice.performances,
   };
-  return renderPlainText(statementData, invoice, plays);
+  return renderPlainText(statementData, plays);
 }
 
 console.log(statement(invoices, plays));
