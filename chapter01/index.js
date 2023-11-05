@@ -107,9 +107,14 @@ function renderPlainText(data, plays) {
 function statement(invoice, plays) {
   const statementData = {
     customer: invoice.customer,
-    performances: invoice.performances,
+    performances: invoice.performances.map(enrichPerformance),
   };
   return renderPlainText(statementData, plays);
+
+  // 객체 복사 이유: 가변 데이터는 금방 상하므로 불변처럼 취급하기 위함
+  function enrichPerformance(aPerformance) {
+    return { ...aPerformance };
+  }
 }
 
 console.log(statement(invoices, plays));
