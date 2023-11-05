@@ -31,7 +31,7 @@ const invoices = {
   ]
 };
 
-function renderPlainText(invoices, plays) {
+function renderPlainText(data, invoices, plays) {
   function usd(aNumber) {
     return new Intl.NumberFormat(
       'en-us', 
@@ -94,8 +94,8 @@ function renderPlainText(invoices, plays) {
     return result;
   }
   
-  let result = `청구 내역 (고객명: ${invoices.customer})\n`;
-  for (let perf of invoices.performances) {
+  let result = `청구 내역 (고객명: ${data.customer})\n`;
+  for (let perf of data.performances) {
     result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`;
   }
 
@@ -104,8 +104,12 @@ function renderPlainText(invoices, plays) {
   return result;
 }
 
-function statement(invoices, plays) {
-  return renderPlainText(invoices, plays);
+function statement(invoice, plays) {
+  const statementData = {
+    customer: invoice.customer,
+    performances: invoice.performances,
+  };
+  return renderPlainText(statementData, invoice, plays);
 }
 
 console.log(statement(invoices, plays));
