@@ -96,14 +96,18 @@ function renderPlainText(data) {
   return result;
 }
 
-function statement(invoice, plays) {
-  const statementData = {
-    customer: invoice.customer,
-    performances: invoice.performances.map(enrichPerformance),
-  };
-  statementData.totalAmount = totalAmount(statementData);
-  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-  return renderPlainText(statementData, plays);
+function statement(invoice) {
+  return renderPlainText(createStatementData(invoice));
+
+  function createStatementData(invoice) {
+    const statementData = {
+      customer: invoice.customer,
+      performances: invoice.performances.map(enrichPerformance),
+    };
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+    return statementData;
+  }
 
   // 객체 복사 이유: 가변 데이터는 금방 상하므로 불변처럼 취급하기 위함
   function enrichPerformance(aPerformance) {
@@ -115,4 +119,4 @@ function statement(invoice, plays) {
   }
 }
 
-console.log(statement(invoices, plays));
+console.log(statement(invoices));
