@@ -31,6 +31,35 @@ const invoices = {
   ]
 };
 
+class PerformanceCalculator {
+  constructor(aPerformance, aPlay) {
+    this.performance = aPerformance;
+    this.play = aPlay;
+  }
+
+  get amount() {
+    let result = 0;
+    switch (this.play.type) {
+      case 'tragedy':
+        result = 40_000;
+        if (this.performance.audience > 30) {
+          result += 1000 * (this.performance.audience - 30);
+        }
+        break;
+      case 'comedy':
+        result = 30_000;
+        if (this.performance.audience > 20) {
+          result += 10_000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
+        break;
+      default:
+        throw new Error(`알 수 없는 장르: ${this.performance.play.type}`)
+    }
+    return result;
+  }
+}
+
 function usd(aNumber) {
   return new Intl.NumberFormat(
     'en-us', 
@@ -63,9 +92,10 @@ function createStatementData(invoice) {
   return statementData;
 
   function enrichPerformance(aPerformance) {
+    const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance)); // 공연료 계산기
     const result = { ...aPerformance };
     result.play = playFor(result);
-    result.amount = amountFor(result);
+    result.amount = calculator.amount;
     result.volumeCredits = volumeCreditsFor(result);
     return result;
   }
@@ -75,25 +105,7 @@ function createStatementData(invoice) {
   }
   
   function amountFor(aPerformance) {
-    let result = 0;
-    switch (playFor(aPerformance).type) {
-      case 'tragedy':
-        result = 40_000;
-        if (aPerformance.audience > 30) {
-          result += 1000 * (aPerformance.audience - 30);
-        }
-        break;
-      case 'comedy':
-        result = 30_000;
-        if (aPerformance.audience > 20) {
-          result += 10_000 + 500 * (aPerformance.audience - 20);
-        }
-        result += 300 * aPerformance.audience;
-        break;
-      default:
-        throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`)
-    }
-    return result;
+    return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
   }
   
   function volumeCreditsFor(aPerformance) {
