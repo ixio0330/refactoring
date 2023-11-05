@@ -30,6 +30,9 @@ const invoices = {
     },
   ]
 };
+function playFor(aPerformance) {
+  return plays[aPerformance.playID];
+}
 
 function renderPlainText(data, plays) {
   function usd(aNumber) {
@@ -41,10 +44,6 @@ function renderPlainText(data, plays) {
         minimumFractionDigits: 2 
       }
     ).format(aNumber/100);
-  }
-  
-  function playFor(aPerformance) {
-    return plays[aPerformance.playID];
   }
 
   function amountFor(aPerformance) {
@@ -64,23 +63,23 @@ function renderPlainText(data, plays) {
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`)
+        throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`)
     }
     return result;
   }
 
-  function volumeCreditsFor(perf) {
+  function volumeCreditsFor(aPerformance) {
     let result = 0;
-    result += Math.max(perf.audience - 30, 0);
-    if ('comedy' === playFor(perf).type) {
-      result += Math.floor(perf.audience / 5);
+    result += Math.max(aPerformance.audience - 30, 0);
+    if ('comedy' === aPerformance.play.type) {
+      result += Math.floor(aPerformance.audience / 5);
     }
     return result;
   }
 
   function totalVolumeCredits() {
     let result = 0;
-    for (let perf of invoices.performances) {
+    for (let perf of data.performances) {
       result += volumeCreditsFor(perf);
     }
     return result;
@@ -96,7 +95,7 @@ function renderPlainText(data, plays) {
   
   let result = `청구 내역 (고객명: ${data.customer})\n`;
   for (let perf of data.performances) {
-    result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`;
+    result += `  ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience})석 \n`;
   }
 
   result += `총액: ${usd(totalAmount())}\n`;
@@ -113,7 +112,9 @@ function statement(invoice, plays) {
 
   // 객체 복사 이유: 가변 데이터는 금방 상하므로 불변처럼 취급하기 위함
   function enrichPerformance(aPerformance) {
-    return { ...aPerformance };
+    const result = { ...aPerformance };
+    result.play = playFor(result);
+    return result;
   }
 }
 
