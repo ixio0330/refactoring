@@ -82,7 +82,7 @@ function totalVolumeCredits(data) {
   return result;
 }
 
-function renderPlainText(data, plays) {
+function renderPlainText(data) {
   function usd(aNumber) {
     return new Intl.NumberFormat(
       'en-us', 
