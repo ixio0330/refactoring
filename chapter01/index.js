@@ -74,18 +74,18 @@ function totalVolumeCredits(data) {
   return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
 }
 
+function usd(aNumber) {
+  return new Intl.NumberFormat(
+    'en-us', 
+    { 
+      style: 'currency', 
+      currency: 'usd', 
+      minimumFractionDigits: 2 
+    }
+  ).format(aNumber/100);
+}
+
 function renderPlainText(data) {
-  function usd(aNumber) {
-    return new Intl.NumberFormat(
-      'en-us', 
-      { 
-        style: 'currency', 
-        currency: 'usd', 
-        minimumFractionDigits: 2 
-      }
-    ).format(aNumber/100);
-  }
-  
   let result = `청구 내역 (고객명: ${data.customer})\n`;
   for (let perf of data.performances) {
     result += `  ${perf.play.name}: ${perf.amount} (${perf.audience})석 \n`;
@@ -96,25 +96,47 @@ function renderPlainText(data) {
   return result;
 }
 
+// 객체 복사 이유: 가변 데이터는 금방 상하므로 불변처럼 취급하기 위함
+function enrichPerformance(aPerformance) {
+  const result = { ...aPerformance };
+  result.play = playFor(result);
+  result.amount = amountFor(result);
+  result.volumeCredits = volumeCreditsFor(result);
+  return result;
+}
+
+function createStatementData(invoice) {
+  const statementData = {
+    customer: invoice.customer,
+    performances: invoice.performances.map(enrichPerformance),
+  };
+  statementData.totalAmount = totalAmount(statementData);
+  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+  return statementData;
+}
+
 function statement(invoice) {
   return renderPlainText(createStatementData(invoice));
+}
 
-  function createStatementData(invoice) {
-    const statementData = {
-      customer: invoice.customer,
-      performances: invoice.performances.map(enrichPerformance),
-    };
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return statementData;
-  }
+function htmlStatement(invoice) {
+  return renderHtml(createStatementData(invoice));
 
-  // 객체 복사 이유: 가변 데이터는 금방 상하므로 불변처럼 취급하기 위함
-  function enrichPerformance(aPerformance) {
-    const result = { ...aPerformance };
-    result.play = playFor(result);
-    result.amount = amountFor(result);
-    result.volumeCredits = volumeCreditsFor(result);
+  function renderHtml(data) {
+    let result = `<h1>청구 내역 (고객명: ${data.customer})</h1>`;
+    result += '<table>\n';
+    result += `<tr>
+      <th>연극</th>
+      <th>좌석 수</th>
+      <th>금액</th>
+    </tr>`;
+    for (let perf of data.performances) {
+      result += `<tr><td>${perf.play.name}</td><td>(${perf.audience})석</td>`;
+      result += `<td>${usd(perf.amount)}</td></tr>\n`;
+    }
+    result += '</table>\n';
+    result += `<p>총액: <em>${usd(data.totalAmount)}</em></p>\n`;
+    result += `<p>적립 포인트: <em>${usd(data.totalVolumeCredits)}</em>점</p>\n`;
     return result;
   }
 }
