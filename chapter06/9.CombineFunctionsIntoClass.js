@@ -19,6 +19,9 @@ class Reading {
   get quantity() { return this._quantity; }
   get month() { return this._month; }
   get year() { return this._year; }
+  get baseCharge() {
+    return baseRate(this.month, this.year) * this.quantity;
+  }
 }
 
 // client1
@@ -36,11 +39,7 @@ class Reading {
 
 // client3
 {
-  const aReading = acquireReading();
-  const basicCharge = calculateBaseCharge(aReading);
-
-  // 요금 계산 함수
-  function calculateBaseCharge(aReading) {
-    return baseRate(aReading.month, aReading.year) * aReading.quantity;
-  }
+  const rawReading = acquireReading();
+  const aReading = new Reading(rawReading);
+  const basicChargeAmount = aReading.baseCharge;
 }
