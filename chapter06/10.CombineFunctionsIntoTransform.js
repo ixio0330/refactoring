@@ -9,10 +9,16 @@
 
 const reading = { customer: 'ivan', quantity: 10, month: 5, year: 2017 };
 
+function enrichReading(original) {
+  const result = JSON.parse(JSON.stringify(original)); // 깊은 복사
+  result.baseCharge = calculateBaseCharge(result);
+  return result;
+}
+
 // client1
 {
-  const aReading = acquireReading();
-  const baseCharge = baseRate(aReading.month, aReading.year) * aReading.quantity;
+  const aReading = enrichReading(acquireReading())
+  const baseCharge = aReading.baseCharge;
 }
 
 // client2
@@ -24,11 +30,12 @@ const reading = { customer: 'ivan', quantity: 10, month: 5, year: 2017 };
 
 // client3
 {
-  const aReading = acquireReading();
-  const basicCharge = calculateBaseCharge(aReading);
+  const rawReading = acquireReading();
+  const aReading = enrichReading(rawReading);
+  const basicCharge = aReading.baseCharge;
+}
 
-  // 요금 계산 함수
-  function calculateBaseCharge(aReading) {
-    return baseRate(aReading.month, aReading.year) * aReading.quantity;
-  }
+// 요금 계산 함수
+function calculateBaseCharge(aReading) {
+  return baseRate(aReading.month, aReading.year) * aReading.quantity;
 }
