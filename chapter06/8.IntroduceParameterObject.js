@@ -22,3 +22,12 @@ const alerts = readingsOutsideRange(
   operationPlan.temperatureFloor, // 최저 온도 
   operationPlan.temperatureCeiling, // 최고 온도
 );
+
+class NumberRange {
+  constructor(min, max) {
+    this._data = { min, max };
+  }
+
+  get min() { return this._data.min; }
+  get max() { return this._data.max; }
+}
