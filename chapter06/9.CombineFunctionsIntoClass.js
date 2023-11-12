@@ -8,6 +8,19 @@
 
 const reading = { customer: 'ivan', quantity: 10, month: 5, year: 2017 };
 
+class Reading {
+  constructor({ customer, quantity, month, year }) {
+    this._customer = customer;
+    this._quantity = quantity;
+    this._month = month;
+    this._year = year;
+  }
+  get customer() { return this._customer; }
+  get quantity() { return this._quantity; }
+  get month() { return this._month; }
+  get year() { return this._year; }
+}
+
 // client1
 {
   const aReading = acquireReading();
