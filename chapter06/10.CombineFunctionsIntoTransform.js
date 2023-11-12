@@ -12,6 +12,7 @@ const reading = { customer: 'ivan', quantity: 10, month: 5, year: 2017 };
 function enrichReading(original) {
   const result = JSON.parse(JSON.stringify(original)); // 깊은 복사
   result.baseCharge = calculateBaseCharge(result);
+  result.taxableCharge = Math.max(0, result.baseCharge - taxThreshold(result.year));
   return result;
 }
 
@@ -24,7 +25,7 @@ function enrichReading(original) {
 // client2
 {
   const aReading = enrichReading(acquireReading());
-  const taxableCharge = Math.max(0, aReading.baseCharge - taxThreshold(aReading.year));
+  const taxableCharge = aReading.taxableCharge;
 }
 
 // client3
