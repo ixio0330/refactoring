@@ -12,15 +12,18 @@ const station = {
 }
 
 // 정상 범위 벗어난 측정값 찾는 함수
-function readingsOutsideRange(station, min, max) {
+function readingsOutsideRange(station, min, max, range) {
   return station.readings.filter(r => r.temp < min || r.temp > max);
 }
 
 // 호출문
+const range = new NumberRange(operationPlan.temperatureFloor, operationPlan.temperatureCeiling);
+
 const alerts = readingsOutsideRange(
   station, 
   operationPlan.temperatureFloor, // 최저 온도 
   operationPlan.temperatureCeiling, // 최고 온도
+  range,
 );
 
 class NumberRange {
