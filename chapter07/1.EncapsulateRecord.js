@@ -66,6 +66,10 @@ class CustomerData {
     this.#data = data;
   }
   get data() { return this.#data; }
+  get rawData() {
+    return JSON.parse(JSON.stringify(this.#data));
+    // 깊은 복사 외에도 읽기 전용으로 만들어서 내보내도 됨
+  }
   setUsage(customerID, year, month, amount) {
     this.#data[customerID].usages[year][month] = amount;
   }
