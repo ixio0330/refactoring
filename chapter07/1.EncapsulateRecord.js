@@ -66,20 +66,22 @@ class CustomerData {
     this.#data = data;
   }
   get data() { return this.#data; }
+  setUsage(customerID, year, month, amount) {
+    this.#data[customerID].usages[year][month] = amount;
+  }
 }
 
 let customerData = new CustomerData(Json);
 
 function getCustomerData() { return customerData; }
-function getRawDataOfCustomers() { return customerData.data; }
 function setRawDataOfCustomers(arg) { customerData = new CustomerData(arg); }
 
 // 쓰기 예
-getRawDataOfCustomers()[customer.ID].usages[year][month] = amount;
+getCustomerData().setUsage(customerID, year, month, amount);
 
 // 읽기 예
 function compareUsage(customerID, lateYear, month) {
-  const later = getRawDataOfCustomers()[customerID].usages[lateYear][month];
-  const earlier = getRawDataOfCustomers()[customerID].usages[lateYear - 1][month];
+  const later = getCustomerData()[customerID].usages[lateYear][month];
+  const earlier = getCustomerData()[customerID].usages[lateYear - 1][month];
   return { lateAmount: later, change: later - earlier };
 }
