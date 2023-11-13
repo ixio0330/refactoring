@@ -19,6 +19,14 @@ function priceOrder(product, quantity, shippingMethod) {
   return price;
 }
 
+function calculatePricingData(product, quantity) {
+  const basePrice = product.basePrice * quantity;
+  const discount = 
+    Math.max(quantity - product.discountThreshold, 0)
+    * product.basePrice * product.discountRate;
+  return { basePrice, quantity, discount };
+}
+
 function applyShipping({ basePrice, quantity, discount }, shippingMethod) {
   const shippingPerCase = 
   basePrice > shippingMethod.discountThreshold
