@@ -13,12 +13,27 @@
  * 레코드의 필드도 데이터 구조의 중첩 구조라면 레코드 캡슐화하기와 컬렉션 캡슐화하기를 재귀적으로 적용
  */
 
-const organization = { name: '애크미 구스베리', country: 'GB' };
+const organization = new Organization({ name: '애크미 구스베리', country: 'GB' });
+
+function getOrganization() {
+  return organization;
+}
 
 // use
 {
   let result = '';
-  result += `<h1>${organization.name}</h1>`;
-  organization.name = newName;
+  result += `<h1>${getOrganization().name}</h1>`;
+  getOrganization().name = newName;
 }
 
+class Organization {
+  #data = {};
+  constructor(data) {
+    this.#data = data;
+  }
+
+  get name() { return this.#data.name; }
+  set name(aString) { this.#data.name = aString; }
+  get country() { return this.#data.country; }
+  set country(aCountryCode) { this.#data.country = aCountryCode; }
+}
