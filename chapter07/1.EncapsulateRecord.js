@@ -39,7 +39,7 @@ class Organization {
 }
 
 // 중첩된 레코드 캡슐화하기
-const Json = {
+const customerData = {
   1920: {
     name: '마틴 파울러',
     id: 1920,
@@ -60,12 +60,15 @@ const Json = {
   }
 };
 
+function getRawDataOfCustomers() { return customerData; }
+function setRawDataOfCustomers(arg) { customerData = arg; }
+
 // 쓰기 예
-customerData[customer.ID].usages[year][month] = amount;
+getRawDataOfCustomers()[customer.ID].usages[year][month] = amount;
 
 // 읽기 예
 function compareUsage(customerID, lateYear, month) {
-  const later = customerData[customerID].usages[lateYear][month];
-  const earlier = customerData[customerID].usages[lateYear - 1][month];
+  const later = getRawDataOfCustomers()[customerID].usages[lateYear][month];
+  const earlier = getRawDataOfCustomers()[customerID].usages[lateYear - 1][month];
   return { lateAmount: later, change: later - earlier };
 }
